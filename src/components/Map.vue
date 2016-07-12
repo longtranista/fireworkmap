@@ -23,6 +23,7 @@
             <div class="date">{{m.info.date}} ({{m.info.from_now}})</div>
             <div class="time">{{m.info.time_start}} ~ {{m.info.time_end}}</div>
             <div class="location">{{m.info.location}}</div>
+            <div class="homepage"><a target="_blank" href="{{m.info_url}}">detail url</a></div>
           </div>
         </info-window>
       </marker>

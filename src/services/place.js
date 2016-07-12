@@ -19,6 +19,7 @@ export default {
           lat: parseFloat(o.latlng[0]),
           lng: parseFloat(o.latlng[1])
         },
+        info_url: o.info_url,
         ifw: false,
         ifw2text: o.date,
         info: {
@@ -34,7 +35,7 @@ export default {
     var me = this
     var count = 0
     each(this.state.markers, function (item) {
-      me.generateIcon(1, function (src) {
+      me.generateIcon(me.dateDiff(item.info.date), function (src) {
         item.icon = {
           url: src
         }
@@ -43,6 +44,14 @@ export default {
         }
       })
     })
+  },
+
+  dateDiff: function (date) {
+    var date1 = new Date(date)
+    var date2 = new Date()
+    var timeDiff = Math.abs(date2.getTime() - date1.getTime())
+    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
+    return diffDays
   },
 
   generateIcon: function (number, callback) {
@@ -66,11 +75,12 @@ export default {
       .attr('viewBox', '0 0 54.4 54.4')
       .append('g')
 
+    var colorCode = number < 11 ? 'red' : '#2063C6'
     var circles = svg.append('circle')
     circles.attr('cx', '27.2')
       .attr('cy', '27.2')
       .attr('r', '21.2')
-      .style('fill', '#2063C6')
+      .style('fill', colorCode)
 
     var path = svg.append('path')
     path.attr('d', 'M27.2,0C12.2,0,0,12.2,0,27.2s12.2,27.2,27.2,27.2s27.2-12.2,27.2-27.2S42.2,0,27.2,0z M6,27.2 C6,15.5,15.5,6,27.2,6s21.2,9.5,21.2,21.2c0,11.7-9.5,21.2-21.2,21.2S6,38.9,6,27.2z')
@@ -82,7 +92,7 @@ export default {
       .attr('text-anchor', 'middle')
       .attr('style', 'font-size:' + fontSize + 'px fill: #FFFFFF font-family: Arial, Verdana font-weight: bold')
       .attr('fill', '#FFFFFF')
-      .text(number)
+      .text(number + 'd')
 
     var svgNode = svg.node().parentNode.cloneNode(true)
     var image = new window.Image()
