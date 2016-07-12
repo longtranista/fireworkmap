@@ -48,6 +48,7 @@ export default {
       .attr('dy', 32)
       .attr('text-anchor', 'middle')
       .attr('style', 'font-size:' + fontSize + 'px fill: #FFFFFF font-family: Arial, Verdana font-weight: bold')
+      .attr('fill', '#FFFFFF')
       .text(number)
 
     console.log(circles, path, text)
@@ -106,7 +107,7 @@ export default {
     var me = this
     var count = 0
     each(this.state.markers, function (item) {
-      me.generateIcon(3, function (src) {
+      me.generateIcon(30, function (src) {
         item.icon = {
           url: src
         }
