@@ -12,6 +12,7 @@
       :position.sync="m.position"
       :label="m.label"
       :icon.sync="m.icon"
+      @g-click="clickMarker(m)"
       v-for="m in markers"
       >
         <info-window
@@ -19,7 +20,7 @@
         :content="m.ifw2text"
         >
           <div class="myInfoWindow">
-            <div class="date">{{m.info.date}}</div>
+            <div class="date">{{m.info.date}} ({{m.info.from_now}})</div>
             <div class="time">{{m.info.time_start}} ~ {{m.info.time_end}}</div>
             <div class="location">{{m.info.location}}</div>
           </div>
@@ -37,6 +38,7 @@
 <script>
   import {load, Map, Marker, Cluster, InfoWindow, PlaceInput} from 'vue-google-maps'
   import shared from '../services/place'
+  import {map} from 'lodash'
 
   load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '1')
 
@@ -80,6 +82,13 @@
     },
     init () {
       shared.init()
+    },
+    methods: {
+      clickMarker: function (marker) {
+        map(this.markers, function (o) {
+          o.ifw = o === marker
+        })
+      }
     }
   }
 </script>
