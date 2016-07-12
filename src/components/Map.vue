@@ -76,12 +76,15 @@
             width: 50
           }
         ],
-        markers: shared.state.markers,
+        markers: [],
         center: {lat: 35.689487, lng: 139.80429064418}
       }
     },
     init () {
-      shared.init()
+      var me = this
+      shared.init(function () {
+        me.$set('markers', shared.state.markers)
+      })
     },
     methods: {
       clickMarker: function (marker) {
