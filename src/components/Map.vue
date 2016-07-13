@@ -58,6 +58,7 @@
           <div class="place-input">
              <place-input
               :select-first-on-enter="true"
+              text="Tokyo"
               @g-place_changed="changeLocation"
             ></place-input>
           </div>
@@ -92,8 +93,8 @@
     },
     data () {
       return {
-        keyword: '',
-        zoom: 11,
+        showMaxLevel: 8,
+        zoom: 10,
         mapBounds: {},
         gridSize: 20,
         showNotify: false,
@@ -122,13 +123,13 @@
           }
         ],
         markers: [],
-        center: {lat: 35.689487, lng: 139.80429064418}
+        center: {lat: 35.689487, lng: 139.691706}
       }
     },
 
     watch: {
       'zoom': function (val) {
-        if (val <= 8) {
+        if (val <= this.showMaxLevel) {
           this.showNotify = true
           this.$set('markers', [])
         } else {
@@ -141,6 +142,7 @@
     },
 
     ready () {
+      document.getElementsByTagName('input')[0].value = 'Tokyo'
       shared.init()
     },
 
@@ -156,7 +158,7 @@
        * @return {[type]} [description]
        */
       mapIdle: function () {
-        (this.zoom > 8) && this.loadMarkers()
+        (this.zoom > this.showMaxLevel) && this.loadMarkers()
       },
 
       loadMarkers: function () {
