@@ -1,7 +1,11 @@
 <template>
   <map
-    :center="center"
-    :zoom="11"
+    v-ref:mymap
+    :center.sync="center"
+    :zoom.sync="zoom"
+    :bounds.sync="mapBounds"
+    @g-drag="dragMap"
+    @g-idle="mapIdle"
   >
   
     <cluster
@@ -30,10 +34,13 @@
     </cluster>
   
   </map>
-  <place-input
-    label="Add a marker at this place"
-    :select-first-on-enter="true"
-  ></place-input>
+  <div class="place-input">
+     <place-input
+      label="Add a marker at this place"
+      :select-first-on-enter="true"
+    ></place-input>
+  </div>
+ 
 </template>
 
 <script>
@@ -41,7 +48,7 @@
   import shared from '../services/place'
   import {map} from 'lodash'
 
-  load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '1')
+  load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '1.0', ['places'])
 
   export default {
     components: {
@@ -53,6 +60,9 @@
     },
     data () {
       return {
+        mapObject: {},
+        zoom: 11,
+        mapBounds: {},
         gridSize: 20,
         clusterStyles: [
           {
@@ -82,15 +92,22 @@
       }
     },
     init () {
-      var me = this
-      shared.init(function () {
-        me.$set('markers', shared.state.markers)
-      })
+    },
+    ready () {
+      shared.init()
     },
     methods: {
       clickMarker: function (marker) {
         map(this.markers, function (o) {
           o.ifw = o === marker
+        })
+      },
+      dragMap: function () {
+      },
+      mapIdle: function () {
+        var me = this
+        shared.getMarkersInBounds(this.mapBounds, function () {
+          me.markers = shared.state.markers
         })
       }
     }
@@ -103,7 +120,11 @@ map {
   height: 100%;
   display: block;
 }
-
+.place-input{
+  position: fixed;
+  top: 30px;
+  left: 50px;
+}
 .myInfoWindow{
   background: #fff;
 }
