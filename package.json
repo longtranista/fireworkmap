@@ -19,7 +19,8 @@
     "lodash": "^4.13.1",
     "moment": "^2.14.1",
     "vue": "^1.0.21",
-    "vue-google-maps": "^0.1.19"
+    "vue-google-maps": "^0.1.19",
+    "vue-spinner": "^1.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

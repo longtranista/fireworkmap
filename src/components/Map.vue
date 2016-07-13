@@ -1,52 +1,83 @@
 <template>
-  <map
-    v-ref:mymap
-    :center.sync="center"
-    :zoom.sync="zoom"
-    :bounds.sync="mapBounds"
-    @g-drag="dragMap"
-    @g-idle="mapIdle"
-  >
-  
-    <cluster
-    :grid-size="gridSize"
-    :styles="clusterStyles"
-    >
-      <marker
-      :position.sync="m.position"
-      :label="m.label"
-      :icon.sync="m.icon"
-      @g-click="clickMarker(m)"
-      v-for="m in markers"
-      >
-        <info-window
-        :opened.sync="m.ifw"
-        :content="m.ifw2text"
+
+  <div id="map-wrapper">
+    <div id="map">
+        <map
+          v-ref:mymap
+          :center.sync="center"
+          :zoom.sync="zoom"
+          :bounds.sync="mapBounds"
+          @g-idle="mapIdle"
         >
-          <div class="myInfoWindow">
-            <div class="date">{{m.info.date}} ({{m.info.from_now}})</div>
-            <div class="time">{{m.info.time_start}} ~ {{m.info.time_end}}</div>
-            <div class="location">{{m.info.location}}</div>
-            <div class="homepage"><a target="_blank" href="{{m.info_url}}">detail url</a></div>
-          </div>
-        </info-window>
-      </marker>
-    </cluster>
-  
-  </map>
-  <div class="place-input">
-     <place-input
-      label="Add a marker at this place"
-      :select-first-on-enter="true"
-    ></place-input>
+        
+      <!--     <cluster
+          :grid-size="gridSize"
+          :styles="clusterStyles"
+          > -->
+            <marker
+            :position.sync="m.position"
+            :label="m.label"
+            :icon.sync="m.icon"
+            @g-click="clickMarker(m)"
+            v-for="m in markers"
+            >
+              <info-window
+              :opened.sync="m.ifw"
+              :content="m.ifw2text"
+              >
+                <div class="myInfoWindow">
+                  <div class="date">
+                    {{m.info.date}} 
+                    (<span class="day">{{m.info.day}}</span>)
+
+                     <span class="countdown">
+                      (in <span class="fromnow">{{m.info.from_now}}</span> days)
+                    </span>
+                  </div>
+                 
+                  <div class="time">{{m.info.time_start}} ~ {{m.info.time_end}}</div>
+                  <div class="location">{{m.info.location}}</div>
+                  <div class="homepage"><a target="_blank" href="{{m.info_url}}">detail url</a></div>
+                </div>
+              </info-window>
+            </marker>
+          <!-- </cluster> -->
+        
+        </map>
+
+        <div v-show="showLoad" class="loader">
+          <pulse-loader :loading="loading" :color="color" :size="size"></pulse-loader>
+        </div>
+      </div>
   </div>
- 
+  <div id="header">
+    <div id="wrapper">
+          
+          <span class="branding">JAPAN FIREWORK 2016</span>
+
+          <div class="place-input">
+             <place-input
+              :select-first-on-enter="true"
+              @g-place_changed="changeLocation"
+            ></place-input>
+          </div>
+    </div>
+  </div>
+  <div v-show="showNotify" id="notify">
+    <div class="content">
+      Zoom in to see
+    </div>
+  </div>
+  <div id="footer">
+    Created by LongTran
+  </div>
 </template>
 
 <script>
   import {load, Map, Marker, Cluster, InfoWindow, PlaceInput} from 'vue-google-maps'
   import shared from '../services/place'
   import {map} from 'lodash'
+  import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
   load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '1.0', ['places'])
 
@@ -56,14 +87,17 @@
       Marker,
       Cluster,
       InfoWindow,
-      PlaceInput
+      PlaceInput,
+      PulseLoader
     },
     data () {
       return {
-        mapObject: {},
+        keyword: '',
         zoom: 11,
         mapBounds: {},
         gridSize: 20,
+        showNotify: false,
+        showLoad: true,
         clusterStyles: [
           {
             textColor: 'red',
@@ -91,41 +125,144 @@
         center: {lat: 35.689487, lng: 139.80429064418}
       }
     },
+
+    watch: {
+      'zoom': function (val) {
+        if (val <= 8) {
+          this.showNotify = true
+          this.$set('markers', [])
+        } else {
+          this.showNotify = false
+        }
+      }
+    },
+
     init () {
     },
+
     ready () {
       shared.init()
     },
+
     methods: {
       clickMarker: function (marker) {
         map(this.markers, function (o) {
           o.ifw = o === marker
         })
       },
-      dragMap: function () {
-      },
+
+      /**
+       * Load Markers when map is idles
+       * @return {[type]} [description]
+       */
       mapIdle: function () {
+        (this.zoom > 8) && this.loadMarkers()
+      },
+
+      loadMarkers: function () {
         var me = this
+        me.showLoad = true
         shared.getMarkersInBounds(this.mapBounds, function () {
           me.markers = shared.state.markers
+          me.showLoad = false
+        })
+      },
+
+      changeLocation: function (event) {
+        var me = this
+        var address = document.getElementsByTagName('input')[0].value
+        shared.getLatLngFromAddr(address, function (latlng) {
+          me.center = latlng.toJSON()
         })
       }
     }
   }
 </script>
 
-<style>
-map {
-  width:100%;
-  height: 100%;
-  display: block;
-}
-.place-input{
+<style lang="scss">
+$headerHeight: 100px;
+$maxWidth: 600px;
+
+
+#map-wrapper{
   position: fixed;
-  top: 30px;
-  left: 50px;
+  top: $headerHeight;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+    div#map {
+      margin: 0 auto;
+      max-width: $maxWidth;
+      /*width:100%;*/
+      height: 100%;
+      display: block;
+      background: #c0c0c0;
+
+      .myInfoWindow{
+        background: #fff;
+
+        .date{
+          font-size: 110%;
+          font-weight: bold;
+        }
+        .fromnow{
+          color: red;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .loader{
+      position: absolute;
+      top: 45%;
+      left: 47%;
+      z-index: 999999999;
+    }
 }
-.myInfoWindow{
-  background: #fff;
+
+#header {
+  background: #f7f7f7;
+  height: $headerHeight;
+
+  #wrapper{
+    max-width: $maxWidth;
+    margin: 0 auto;
+    padding: 10px;
+    .branding{
+      display: block;
+      color: #27ab46;
+      font-size: 120%;
+    }
+
+    .place-input{
+      margin-top: 12px;
+        top: 30px;
+        left: 10%;
+        input{
+          font-size: 110%;
+          min-width: 70%;
+        }
+      }
+  }
 }
+
+#notify{
+  margin-top: -25px;
+  background: #ffcbcb;
+  .content{
+    padding: 3px 0;
+    margin: 0 auto;
+    max-width: $maxWidth;
+  }
+}
+
+#footer{
+  position: fixed;
+  bottom: 4px;
+  left: 10px;
+  font-size: 13px;
+  color: #c0c0c0;
+}
+
 </style>
