@@ -1,0 +1,4 @@
+#copy nginx config
+
+#Run server: 
+uwsgi --socket 127.0.0.1:9001 --chdir /root/fireworkmap/ --wsgi-file djangovuewebpack/wsgi.py --master --processes 1 --threads 2 --stats 127.0.0.1:8003 
