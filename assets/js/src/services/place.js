@@ -5,13 +5,13 @@ import * as d3 from 'd3'
 import {codeAddress} from './geocode'
 
 var weekday = {
-  2: 'Mon',
-  3: 'Tue',
-  4: 'Wed',
-  5: 'Thu',
-  6: 'Fri',
-  7: 'Sat',
-  8: 'Sun'
+  1: 'Mon',
+  2: 'Tue',
+  3: 'Wed',
+  4: 'Thu',
+  5: 'Fri',
+  6: 'Sat',
+  0: 'Sun'
 }
 
 export default {
@@ -24,7 +24,7 @@ export default {
   generateIconCache: {},
 
   preheatCache: function () {
-    for (var i = 1; i < 50; i++) {
+    for (var i = -1; i < 33; i++) {
       this.generateIcon(i)
     }
   },
@@ -70,7 +70,9 @@ export default {
     var checkArr = []
     each(markers, function (item, idx) {
       item.id = idx + 1
-      me.generateIcon(me.dateDiff(item.info.date), function (src) {
+      var makerIconNumber = Math.min(me.dateDiff(item.info.date), 32)
+      makerIconNumber = Math.max(makerIconNumber, -1)
+      me.generateIcon(makerIconNumber, function (src) {
         item.icon = {
           url: src
         }
@@ -98,29 +100,29 @@ export default {
       callback(this.generateIconCache[number])
     }
 
-    var fontSize = 16
+    var fontSize = 18
     var imageWidth = 35
     var imageHeight = 35
-
-    if (number >= 1000) {
-      fontSize = 10
-      imageWidth = imageHeight = 55
-    } else if (number < 1000 && number > 100) {
-      fontSize = 14
-      imageWidth = imageHeight = 45
-    }
 
     var svg = d3.select(document.createElement('div')).append('svg')
       .attr('viewBox', '0 0 54.4 54.4')
       .append('g')
 
     var colorCode
-    if (number < 7) {
+    if (number < 0) {
+      colorCode = 'grey'
+    } else if (number < 7) {
       colorCode = 'red'
     } else if (number < 14) {
-      colorCode = 'orange'
+      colorCode = '#fd944a'
     } else {
       colorCode = '#2063C6'
+    }
+
+    if (number > 31) {
+      number = 'M'
+    } else if (number < 0) {
+      number = '-'
     }
 
     var circles = svg.append('circle')
@@ -137,9 +139,10 @@ export default {
     text.attr('dx', 27)
       .attr('dy', 32)
       .attr('text-anchor', 'middle')
-      .attr('style', 'font-size:' + fontSize + 'px fill: #FFFFFF font-family: Arial, Verdana font-weight: bold')
+      .attr('style', 'fill: #FFFFFF font-family: Arial, Verdana font-weight: bold')
       .attr('fill', '#FFFFFF')
-      .text(number + 'd')
+      .attr('font-size', fontSize)
+      .text(number)
 
     var svgNode = svg.node().parentNode.cloneNode(true)
     var image = new window.Image()

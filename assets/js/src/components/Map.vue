@@ -66,7 +66,7 @@
   </div>
   <div v-show="showNotify" id="notify">
     <div class="content">
-      Zoom in to see
+      Zoom in to see markers!
     </div>
   </div>
   <div id="footer">
@@ -238,7 +238,7 @@ $maxWidth: 600px;
     }
 
     .place-input{
-      margin-top: 12px;
+      margin-top: 6px;
         top: 30px;
         left: 10%;
         input{
@@ -256,6 +256,7 @@ $maxWidth: 600px;
     padding: 3px 0;
     margin: 0 auto;
     max-width: $maxWidth;
+    text-align: center;
   }
 }
 
