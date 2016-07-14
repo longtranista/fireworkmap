@@ -5,8 +5,8 @@
   "author": "LongTran",
   "private": true,
   "scripts": {
-    "dev": "node build/dev-server.js",
-    "build": "node build/build.js",
+    "dev": "node assets/js/build/dev-server.js",
+    "build": "node assets/js/build/build.js",
     "unit": "karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",

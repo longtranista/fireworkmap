@@ -1,27 +1,21 @@
-# fireworkmap
+# django-vue-webpack
+A boilerplate of using Django as backend framework, Vue js and webpack as the frontend setup.
 
-> Japan's firework map
+## Installation 
+#### Clone the repository
+```git clone git@github.com:phocode/django-vue-webpack.git```
 
-## Build Setup
+#### Run django 
+```python manage.py runserver 0.0.0.0:8000```
 
-``` bash
-# install dependencies
-npm install
+#### Install npm packages
+```npm install```
 
-# serve with hot reload at localhost:8080
-npm run dev
+#### Run client (node)
+```npm run dev```
 
-# build for production with minification
-npm run build
+We are done. 
 
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+#### Enjoy coding
+  * Frontend: http://localhost:8081/
+  * Backend: http://localhost:8000/
