@@ -80,7 +80,7 @@
   import {map} from 'lodash'
   import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 
-  load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '1.0', ['places'])
+  load('AIzaSyAz-kAgMOocefWOYiGjGyNRzsMJHZkzPyI', '3', ['places'])
 
   export default {
     components: {
