@@ -4,6 +4,6 @@
 **fireworkmap** allows people to search for firework locations in Japan on map. The easiest way to find the location and the time of the firework events. 
 
 ## demo
-The online demo app is at [hanabimap](http://www.hanabimap.info)
+The online demo app is at [hanabimap](http://hanabimap.info)
 
 
