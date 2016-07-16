@@ -30,6 +30,7 @@ export default {
   },
 
   init (callback) {
+    console.log(this.dateDiff('2016/7/17'))
     this.preheatCache()
     var me = this
     this.places = map(data.data, function (o) {
@@ -90,7 +91,7 @@ export default {
   dateDiff: function (date) {
     var date1 = new Date(date)
     var date2 = new Date()
-    var timeDiff = Math.abs(date2.getTime() - date1.getTime())
+    var timeDiff = date1.getTime() - date2.getTime()
     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
     return diffDays
   },
