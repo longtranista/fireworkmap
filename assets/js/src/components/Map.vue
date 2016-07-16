@@ -70,7 +70,9 @@
     </div>
   </div>
   <div id="footer">
-    Created by LongTran
+    <span>Created by LongTran</span>
+    <a href="https://github.com/phocode/fireworkmap">Github</a>
+
   </div>
 </template>
 
@@ -262,10 +264,10 @@ $maxWidth: 600px;
 
 #footer{
   position: fixed;
-  bottom: 4px;
-  left: 10px;
+  top: 4px;
+  right: 10px;
   font-size: 13px;
-  color: #c0c0c0;
+  color: #ccc;
 }
 
 </style>
