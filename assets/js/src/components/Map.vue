@@ -61,6 +61,9 @@
               text="Tokyo"
               @g-place_changed="changeLocation"
             ></place-input>
+
+            <span @click="getCurrentLocation" class="current"><img src="../assets/current.png"></span>
+            
           </div>
     </div>
   </div>
@@ -70,7 +73,8 @@
     </div>
   </div>
   <div id="footer">
-    <span>Created by LongTran</span>
+    <span>@By LongTran</span>
+
     <a href="https://github.com/phocode/fireworkmap">Github</a>
 
   </div>
@@ -178,6 +182,19 @@
         shared.getLatLngFromAddr(address, function (latlng) {
           me.center = latlng.toJSON()
         })
+      },
+
+      getCurrentLocation: function () {
+        var me = this
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            me.center.lat = position.coords.latitude
+            me.center.lng = position.coords.longitude
+            me.zoom = 12
+          })
+        } else {
+          window.alert('Geolocation is not supported by this browser.')
+        }
       }
     }
   }
@@ -247,6 +264,28 @@ $maxWidth: 600px;
           font-size: 110%;
           min-width: 70%;
         }
+
+        .current{
+          border: 1px solid #c0c0c0;
+          background: #fff;
+          height: 23px;
+          padding: 2px;
+          display: inline-block;
+          border-radius: 3px;
+          vertical-align: center;
+          cursor: pointer;
+
+          img{
+            width: 21px;
+            vertical-align: middle;
+            margin-bottom: 5px;
+            display: inline;
+          }
+        }
+        .current:hover{
+          background: #f0f0f0;
+        }
+        
       }
   }
 }
