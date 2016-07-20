@@ -23,4 +23,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'^api/', include('myapp.urls')),
     url(r'^', include('myapp.urls')),
+    url(r'api/', include('api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

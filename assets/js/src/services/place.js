@@ -3,6 +3,7 @@ import moment from 'moment'
 import data from './data'
 import * as d3 from 'd3'
 import {codeAddress} from './geocode'
+import $ from 'jquery'
 
 var weekday = {
   1: 'Mon',
@@ -16,7 +17,8 @@ var weekday = {
 
 export default {
   state: {
-    markers: []
+    markers: [],
+    shops: []
   },
 
   places: data.data,
@@ -59,6 +61,23 @@ export default {
   getLatLngFromAddr: function (addr, callback) {
     codeAddress(addr, function (latlng) {
       callback(latlng)
+    })
+  },
+
+  getShops: function (bound, callback) {
+    var data = {
+      p1_lat: bound.getNorthEast().lat(),
+      p1_lng: bound.getNorthEast().lng(),
+      p2_lat: bound.getSouthWest().lat(),
+      p2_lng: bound.getSouthWest().lng()
+    }
+    console.log(data)
+    var self = this
+    $.get('/api/restaurants', data, function (res) {
+      self.state.shops = res.data
+      console.log(self.state.shops)
+
+      callback && callback()
     })
   },
 

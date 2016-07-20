@@ -42,7 +42,28 @@
               </info-window>
             </marker>
           <!-- </cluster> -->
-        
+          
+          <cluster
+          :grid-size="gridSize"
+          :styles="clusterStyles"
+          > 
+            <marker
+              :position.sync="m.position"
+              v-for="m in shops"
+              >
+                <info-window
+                :opened.sync="m.ifw"
+                :content="m.name"
+                >
+                  <div class="myInfoWindow">
+                    {{ m.name }}
+                  </div>
+                    }
+                </info-window>
+              </marker>
+          </cluster>
+
+
         </map>
 
         <div v-show="showLoad" class="loader">
@@ -65,6 +86,12 @@
             <span @click="getCurrentLocation" class="current"><img src="../assets/current.png"></span>
             
           </div>
+    </div>
+
+    <div id="controlbar">
+      <div id="content">
+        Something crazy here
+      </div>
     </div>
   </div>
   <div v-show="showNotify" id="notify">
@@ -129,6 +156,7 @@
           }
         ],
         markers: [],
+        shops: [],
         center: {lat: 35.689487, lng: 139.691706}
       }
     },
@@ -171,8 +199,13 @@
         var me = this
         me.showLoad = true
         shared.getMarkersInBounds(this.mapBounds, function () {
-          me.markers = shared.state.markers
+          // me.markers = shared.state.markers
           me.showLoad = false
+        })
+
+        shared.getShops(this.mapBounds, function () {
+          console.log('finished')
+          me.shops = shared.state.shops
         })
       },
 
@@ -214,7 +247,7 @@ $maxWidth: 600px;
 
     div#map {
       margin: 0 auto;
-      max-width: $maxWidth;
+      // max-width: $maxWidth;
       /*width:100%;*/
       height: 100%;
       display: block;
